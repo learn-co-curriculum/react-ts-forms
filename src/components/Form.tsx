@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 function Form() {
-  const [firstName, setFirstName] = useState("John");
-  const [lastName, setLastName] = useState("Henry");
+  const [firstName, setFirstName] = useState("Serene");
+  const [lastName, setLastName] = useState("Chakravarti");
 
   return (
     <form>
