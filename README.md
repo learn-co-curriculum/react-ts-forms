@@ -13,7 +13,7 @@ In this lesson, we'll discuss how to set up controlled inputs in React.
 If you want to code along, there is starter code in the `src` folder. Make sure
 to run `npm install && npm start` to see the code in the browser.
 
-> Note: in the examples in this lesson, form submission functionality is omitted
+> Note: In the examples in this lesson, form submission functionality is omitted
 > for simplicity.
 
 ## Controlling Form Values From State
@@ -27,11 +27,11 @@ form is **a form that derives its input values from state**. Consider the
 following:
 
 ```jsx
-import React, { useState } from "react";
+import { useState } from "react";
 
 function Form() {
-  const [firstName, setFirstName] = useState("John");
-  const [lastName, setLastName] = useState("Henry");
+  const [firstName, setFirstName] = useState("Serene");
+  const [lastName, setLastName] = useState("Chakravarti");
 
   return (
     <form>
@@ -78,11 +78,11 @@ passed in is automatically provided by the `onChange` event listener. Let's
 write out what these functions look like:
 
 ```jsx
-function handleFirstNameChange(event) {
+function handleFirstNameChange(event: React.ChangeEvent<HTMLInputElement>) {
   setFirstName(event.target.value);
 }
 
-function handleLastNameChange(event) {
+function handleLastNameChange(event: React.ChangeEvent<HTMLInputElement>) {
   setLastName(event.target.value);
 }
 ```
@@ -110,11 +110,11 @@ function Form() {
   const [firstName, setFirstName] = useState("John");
   const [lastName, setLastName] = useState("Henry");
 
-  function handleFirstNameChange(event) {
+  function handleFirstNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     setFirstName(event.target.value);
   }
 
-  function handleLastNameChange(event) {
+  function handleLastNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     setLastName(event.target.value);
   }
 
@@ -147,12 +147,17 @@ Controlling forms makes it more convenient to share form values between
 components. Since the form values are stored in state, they are easily passed
 down as props or sent upward via a function supplied in props.
 
-## Form Element Types
+## Form Elements
 
 Form elements include `<input>`, `<textarea>`, `<select>`, and `<form>` itself.
 When we talk about inputs in this lesson, we broadly mean the form elements
 (`<input>`, `<textarea>`, `<select>`) and not always specifically just
 `<input>`.
+
+As we learned before, we can figure out the TypeScript types of these elements
+that React provides by hovering over them. Typically, however, you can make an
+educated guess that it follows the format: `HTML<name>Element`. Such as
+`HTMLInputElement` or `HTMLSelectElement`.
 
 To control the value of these inputs, we use a prop specific to that type of
 input:
@@ -166,7 +171,7 @@ import React, { useState } from "react";
 function Form() {
   const [newsletter, setNewsletter] = useState(false);
 
-  function handleNewsletterChange(event) {
+  function handleNewsletterChange(event: React.ChangeEvent<HTMLInputElement>) {
     // .checked, not .value!
     setNewsletter(event.target.checked);
   }
@@ -208,18 +213,18 @@ just handles the display of JSX:
 
 ```jsx
 // src/components/ParentComponent
-import React, { useState } from "react";
+import { useState } from "react";
 import Form from "./Form";
 
 function ParentComponent() {
-  const [firstName, setFirstName] = useState("John");
-  const [lastName, setLastName] = useState("Henry");
+  const [firstName, setFirstName] = useState("Serene");
+  const [lastName, setLastName] = useState("Chakravarti");
 
-  function handleFirstNameChange(event) {
+  function handleFirstNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     setFirstName(event.target.value);
   }
 
-  function handleLastNameChange(event) {
+  function handleLastNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     setLastName(event.target.value);
   }
 
@@ -240,14 +245,19 @@ Then `Form` can become:
 
 ```jsx
 // src/components/Form
-import React from "react";
+interface Props {
+  firstName: string;
+  lastName: string;
+  handleFirstNameChange(React.ChangeEvent<HTMLInputElement>): void;
+  handleLastNameChange(React.ChangeEvent<HTMLInputElement>): void;
+}
 
 function Form({
   firstName,
   lastName,
   handleFirstNameChange,
   handleLastNameChange,
-}) {
+}: Props) {
   return (
     <form>
       <input type="text" onChange={handleFirstNameChange} value={firstName} />
@@ -260,13 +270,13 @@ function Form({
 export default Form;
 ```
 
-Previously, our application was rendering `Form` directly inside `src/index.js`.
-Now, however, we've added a component that renders `Form` as a child. Because of
-this change, you'll need to update `src/index.js` so that it renders
-`ParentComponent` instead of `Form`.
+Previously, our application was rendering `Form` directly inside
+`src/index.tsx`. Now, however, we've added a component that renders `Form` as a
+child. Because of this change, you'll need to update `src/index.tsx` so that it
+renders `ParentComponent` instead of `Form`.
 
 > **Note**: If you're following along in the example files, don't forget to
-> update `index.js` to point to `ParentComponent`. If you don't make this
+> update `index.tsx` to point to `ParentComponent`. If you don't make this
 > change, the behavior of the form inputs will appear the same, but they will
 > just be regular HTML input fields — they will not be controlled. To verify
 > this, you can log `event.target.value` from inside the `handleFirstNameChange`
@@ -283,9 +293,12 @@ in the form:
 
 ```jsx
 // src/components/DisplayData
-import React from "react";
+interface Props {
+  firstName: string;
+  lastName: string;
+}
 
-function DisplayData({ firstName, lastName }) {
+function DisplayData({ firstName, lastName }: Props) {
   return (
     <div>
       <h1>{firstName}</h1>
@@ -301,7 +314,7 @@ export default DisplayData;
 
 ```jsx
 // src/components/ParentComponent
-import React, { useState } from "react";
+import { useState } from "react";
 import Form from "./Form";
 import DisplayData from "./DisplayData";
 
@@ -350,7 +363,7 @@ _before_ we set it on the state, allowing us to block any invalid values:
 function Form() {
   const [number, setNumber] = useState(0);
 
-  function handleNumberChange(event) {
+  function handleNumberChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newNumber = parseInt(event.target.value);
     if (newNumber >= 0 && newNumber <= 5) {
       setNumber(newNumber);
@@ -375,7 +388,7 @@ function Form() {
   const [number, setNumber] = useState(0);
   const [isInvalidNumber, setIsInvalidNumber] = useState(null);
 
-  function handleNumberChange(event) {
+  function handleNumberChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newNumber = parseInt(event.target.value);
     if (newNumber >= 0 && newNumber <= 5) {
       setNumber(newNumber);
@@ -388,7 +401,9 @@ function Form() {
   return (
     <form>
       <input type="number" value={number} onChange={handleNumberChange} />
-      {isInvalidNumber ? <span style={{ color: "red" }}>{isInvalidNumber}</span> : null}
+      {isInvalidNumber ? (
+        <span style={{ color: "red" }}>{isInvalidNumber}</span>
+      ) : null}
     </form>
   );
 }
