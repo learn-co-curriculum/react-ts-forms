@@ -96,7 +96,7 @@ Keep in mind, **this is not the value we provided from state**. When we read
 `event.target.value`, we get whatever content is present when the event fired.
 In the case of our first input, that would be a combination of whatever
 `firstName` is equal to _plus_ **the last key stroke**. If you pressed 's',
-`event.target.value` would equal "Johns".
+`event.target.value` would equal "Serenes".
 
 Inside both functions is a function to update state. The two functions are
 nearly identical, with just one difference: `setFirstName()` changes the
@@ -107,8 +107,8 @@ would look like the following:
 import React, { useState } from "react";
 
 function Form() {
-  const [firstName, setFirstName] = useState("John");
-  const [lastName, setLastName] = useState("Henry");
+  const [firstName, setFirstName] = useState("Serene");
+  const [lastName, setLastName] = useState("Chakravarti");
 
   function handleFirstNameChange(event: React.ChangeEvent<HTMLInputElement>) {
     setFirstName(event.target.value);
@@ -138,7 +138,7 @@ used to set the `value` attributes of our two `input`s.
 From a **user**'s perspective, the form behaves exactly how we'd expect,
 displaying the text that is typed. From **React**'s perspective, we gain control
 over form values, giving us the ability to more easily manipulate (or restrict)
-what our `inputs`s display, and send form data to other parts of the app or out
+what our `input`s display, and send form data to other parts of the app or out
 onto the internet...
 
 ![Diagram of onChange events](https://curriculum-content.s3.amazonaws.com/react/react-forms/Image_21_FlowchartUpdate.png)
@@ -248,8 +248,8 @@ Then `Form` can become:
 interface Props {
   firstName: string;
   lastName: string;
-  handleFirstNameChange(React.ChangeEvent<HTMLInputElement>): void;
-  handleLastNameChange(React.ChangeEvent<HTMLInputElement>): void;
+  handleFirstNameChange(event: React.ChangeEvent<HTMLInputElement>): void;
+  handleLastNameChange(event: React.ChangeEvent<HTMLInputElement>): void;
 }
 
 function Form({
